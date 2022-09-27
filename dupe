@@ -1,0 +1,30 @@
+local DUPE_AMOUNT = tonumber(args[2])
+	local LP = game.Players.LocalPlayer
+	local SAVE_CF = LP.Character.HumanoidRootPart.CFrame
+	local RS = game:GetService('RunService').RenderStepped
+	for i = 1,DUPE_AMOUNT do
+		local start = tick()
+		local dropped_tools = {}
+		local CHAR = LP.Character
+		LP.Character = Clone
+		LP.Character = CHAR
+		repeat RS:Wait() until tick() - start >= 4.8
+		LP.Character.HumanoidRootPart.CFrame = SAVE_CF + Vector3.new(0,10000,0)
+		repeat RS:Wait() until tick() - start >= 4.9
+		for _,tool in next, LP.Backpack:GetChildren() do
+			tool.Parent = LP.Character
+		end
+		for _, tool in next, LP.Character:GetChildren() do
+			if tool:IsA'Tool' then
+				tool.Parent = game.Workspace
+				table.insert(dropped_tools, tool)
+			end
+		end
+		LP.Character:BreakJoints()
+		LP.CharacterAdded:Wait()
+		for _, tool in next, dropped_tools do
+			LP.Character:WaitForChild'Humanoid':EquipTool(tool)
+		end
+		LP.Character:WaitForChild('HumanoidRootPart').CFrame = SAVE_CF
+	end
+end)
