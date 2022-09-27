@@ -1,0 +1,13 @@
+function tween_distance(obj, dist, time)
+		local tween = game:GetService("TweenService")
+		local ti = TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+		local tw = tween:Create(obj, ti, {CFrame = dist})
+		tw:Play()
+	end
+	for _, target in pairs(GetPlayer(args[2])) do
+		tween_distance(LocalPlayer.Character.HumanoidRootPart, target.Character.Head.CFrame - Vector3.new(0,2,0), .1)
+		LocalPlayer.Character.Humanoid.Sit = true
+		wait(.1)
+		LocalPlayer.Character.Humanoid.Sit = false
+	end
+end)
