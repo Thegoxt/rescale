@@ -1,0 +1,27 @@
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Character = LocalPlayer.Character
+local Humanoid = Character:WaitForChild("Humanoid")
+
+local rm = function()
+    for i,v in pairs(Character:GetDescendants()) do
+            if v.Name == "Handle"  then
+                if Character.Head:WaitForChild("OriginalSize") then
+                end
+                v:WaitForChild("OriginalSize"):Destroy()
+                if v:WaitForChild("AvatarPartScaleType") then
+            end
+        end
+    end
+end
+rm()
+Humanoid:WaitForChild("BodyTypeScale"):Destroy()
+rm()
+Humanoid:WaitForChild("BodyProportionScale"):Destroy()
+rm()
+Humanoid:WaitForChild("BodyWidthScale"):Destroy()
+rm()
+Humanoid:WaitForChild("BodyHeightScale"):Destroy()
+rm()
+Humanoid:WaitForChild("BodyDepthScale"):Destroy()
+rm()
+Humanoid:WaitForChild("HeadScale"):Destroy()
