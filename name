@@ -1,0 +1,5 @@
+function Chat(Message)
+    wait(.2)
+    game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(Message,"All")
+end
+Chat("[Visions Admin] v1")
