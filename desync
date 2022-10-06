@@ -1,0 +1,17 @@
+local Backpack = LocalPlayer.Backpack		
+    local Objects = target.Character:GetDescendants()
+		for I = 1, #Objects do
+			local Object = Objects[I]
+			if game.IsA(Object, 'Sound') then
+				Object.TimePosition = math.random(1,100)
+			end
+		end
+		local Objects = target.Backpack:GetDescendants()
+		for I = 1, #Objects do
+			local Object = Objects[I]
+			if game.IsA(Object, 'Sound') then
+				Object.TimePosition = math.random(1,100)
+			end
+		end
+	end
+end)
