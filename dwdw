@@ -58,18 +58,6 @@ local function Destroy()
     Attachment0.CFrame = CFrame.new(0, 0, 0) 
 end
 
-local function GetPlayer(Name)
-    Name = Name:lower():gsub(" ","") or ""
-    for _,x in next, Players:GetPlayers() do
-        if x ~= Player then
-            if x.Name:lower():match("^"..Name) then
-                return x
-            elseif x.DisplayName:lower():match("^"..Name) then
-                return x
-            end
-        end
-    end
-end
 
 local TC = target.Character
 local TH = TC:WaitForChild("Humanoid")
