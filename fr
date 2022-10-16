@@ -1,0 +1,114 @@
+local PlayerMetaVars = {}
+local TargetMetaVars = {}
+
+local RenewVariables = true
+
+local Variables = function(ReturnError)
+    PlayerMetaVars["Character"] = Player.Character or false
+    PlayerMetaVars["Humanoid"] = PlayerMetaVars["Character"] and PlayerMetaVars["Character"]:FindFirstChildOfClass("Humanoid") or false
+    PlayerMetaVars["RootPart"] = PlayerMetaVars["Humanoid"] and PlayerMetaVars["Humanoid"].RootPart or false
+    PlayerMetaVars["Tool"] = PlayerMetaVars["Character"] and PlayerMetaVars["Character"]:FindFirstChildOfClass("Tool") or Player.Backpack:FindFirstChildOfClass("Tool") or false
+    PlayerMetaVars["Handle"] = PlayerMetaVars["Tool"] and PlayerMetaVars["Tool"]:FindFirstChild("Handle", true) or false
+    
+    TargetMetaVars["TPlayer"] = GetPlayer(Target)
+    TargetMetaVars["TCharacter"] = TargetMetaVars["TPlayer"].Character or false
+    TargetMetaVars["THumanoid"] = TargetMetaVars["TCharacter"] and TargetMetaVars["TCharacter"]:FindFirstChildOfClass("Humanoid") or false
+    TargetMetaVars["TRootPart"] = TargetMetaVars["THumanoid"] and TargetMetaVars["THumanoid"].RootPart or false
+
+    local ErrorCheck = false
+    
+    for _,x in next, PlayerMetaVars do
+        if not x then
+            if ReturnError then
+                Message("Error:", _.." not valid.")
+            end
+            ErrorCheck = true
+        end
+    end
+    
+    for _,x in next, TargetMetaVars do
+        if not x then
+            if ReturnError then
+                Message("Error:", "Target".._.." not valid.")
+            end
+            ErrorCheck = true
+        end
+    end
+    
+    if ErrorCheck then return end
+end
+Variables(false)
+
+if RenewVariables then
+    Player.CharacterAdded:Connect(function(Character)
+        repeat RunService.Heartbeat:wait() until Character and Character:FindFirstChildWhichIsA("Humanoid") and Character:FindFirstChildWhichIsA("Humanoid").RootPart
+        Variables(false)
+    end)
+    TargetMetaVars.TPlayer.CharacterAdded:Connect(function(TCharacter)
+        repeat RunService.Heartbeat:wait() until TCharacter and TCharacter:FindFirstChildWhichIsA("Humanoid") and TCharacter:FindFirstChildWhichIsA("Humanoid").RootPart
+        Variables(false)
+    end)
+end
+
+local Void = function()
+    local Tools = {}
+    local Old = PlayerMetaVars.RootPart.CFrame
+    local OldTime = tick()
+
+    workspace.FallenPartsDestroyHeight = 0/0
+    
+    PlayerMetaVars.RootPart.CFrame = TargetMetaVars.TRootPart.CFrame
+    PlayerMetaVars.Character:SetPrimaryPartCFrame(TargetMetaVars.TRootPart.CFrame)
+    
+    PlayerMetaVars.Humanoid:Destroy()
+    local NewHumanoid = PlayerMetaVars.Humanoid:Clone()
+    NewHumanoid.Parent = PlayerMetaVars.Character
+    NewHumanoid:UnequipTools()
+    
+    table.foreach(Player.Backpack:GetChildren(), function(_, x)
+        x.Parent = PlayerMetaVars.Character
+        if x:FindFirstChild("Handle") then
+            table.insert(Tools, x.Handle)
+        end
+    end)
+    
+    PlayerMetaVars.Humanoid:SetStateEnabled("FallingDown", false)
+    workspace.CurrentCamera.CameraSubject = TargetMetaVars.THumanoid
+    PlayerMetaVars.RootPart.CFrame = CFrame.new(0, -10000, 0)
+    PlayerMetaVars.Character:SetPrimaryPartCFrame(CFrame.new(0, -10000, 0))
+    
+    coroutine.wrap(function()
+        for i = 1, 3 do task.wait() end
+        workspace.FallenPartsDestroyHeight = -500
+        wait(.20)
+        if TargetMetaVars.THumanoid.Health > 0 then
+            table.foreach(NewHumanoid:GetAccessories(), function(_, x)
+                if x:FindFirstChild("Handle") then
+                    x.Handle:Destroy()
+                end
+            end)
+            Player.Character = PlayerMetaVars.Character:Destroy()
+        end
+    end)()
+    coroutine.wrap(function()
+        repeat
+            if TargetMetaVars.THumanoid.Health <= 0 then
+                Message("Success", "Target has died. Took "..tostring(tick() - OldTime):sub(1, 5).." seconds.", 5)
+                break
+            end
+            task.wait()
+        until tick() - OldTime > 5
+    end)()
+    for _,x in next, Tools do
+        repeat
+            firetouchinterest(TargetMetaVars.TRootPart, x, 0)
+            firetouchinterest(TargetMetaVars.TRootPart, x, 1)
+            RunService.Heartbeat:wait()
+        until x.Parent.Parent ~= Character or not TargetMetaVars.TPlayer or not TargetMetaVars.TRootPart or TargetMetaVars.THumanoid.Health <= 0
+    end
+    PlayerMetaVars.Character = Player.CharacterAdded:wait()
+    repeat RunService.Heartbeat:wait() until PlayerMetaVars.Character and PlayerMetaVars.Character.PrimaryPart
+    RunService.Heartbeat:wait()
+    PlayerMetaVars.Character:SetPrimaryPartCFrame(Old)
+end
+Void()
