@@ -7,6 +7,24 @@ local RunService = game:GetService("RunService")
 local function Leg()Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false) Humanoid.Sit = true local character = Character;character:WaitForChild("LeftLowerLeg"):WaitForChild("LeftKneeRigAttachment"):WaitForChild("OriginalPosition"):Destroy()character:WaitForChild("LeftUpperLeg"):WaitForChild("LeftKneeRigAttachment"):WaitForChild("OriginalPosition"):Destroy()character:WaitForChild("LeftLowerLeg"):WaitForChild("LeftKneeRigAttachment"):Destroy()character:WaitForChild("LeftUpperLeg"):WaitForChild("LeftKneeRigAttachment"):Destroy()character:WaitForChild("LeftFoot"):WaitForChild("OriginalSize"):Destroy()character:WaitForChild("LeftLowerLeg"):WaitForChild("OriginalSize"):Destroy()character:WaitForChild("LeftUpperLeg"):WaitForChild("OriginalSize"):Destroy()character:WaitForChild("Humanoid"):WaitForChild("BodyTypeScale"):Destroy()character.LeftFoot:WaitForChild("OriginalSize"):Destroy()character.LeftLowerLeg:WaitForChild("OriginalSize"):Destroy()character.LeftUpperLeg:WaitForChild("OriginalSize"):Destroy()character.Humanoid:WaitForChild("BodyProportionScale"):Destroy()character.LeftFoot:WaitForChild("OriginalSize"):Destroy()character.LeftLowerLeg:WaitForChild("OriginalSize"):Destroy()character.LeftUpperLeg:WaitForChild("OriginalSize"):Destroy()character.Humanoid:WaitForChild("BodyWidthScale"):Destroy()character.LeftFoot:WaitForChild("OriginalSize"):Destroy()character.LeftLowerLeg:WaitForChild("OriginalSize"):Destroy()character.LeftUpperLeg:WaitForChild("OriginalSize"):Destroy()character.Humanoid:WaitForChild("BodyHeightScale"):Destroy()character.LeftFoot:WaitForChild("OriginalSize"):Destroy()character.LeftLowerLeg:WaitForChild("OriginalSize"):Destroy()character.LeftUpperLeg:WaitForChild("OriginalSize"):Destroy()character.Humanoid:WaitForChild("BodyDepthScale"):Destroy()character.LeftFoot:WaitForChild("OriginalSize"):Destroy()character.LeftLowerLeg:WaitForChild("OriginalSize"):Destroy()character.LeftUpperLeg:WaitForChild("OriginalSize"):Destroy()character.Humanoid:WaitForChild("HeadScale"):Destroy() end
 Leg()
 task.wait(5)
+local PrimaryPart = game.Players.LocalPlayer.Character.PrimaryPart -- Our Root
+local LineForce = Instance.new("LineForce", PrimaryPart) -- Line Force instance
+local DestinationPart = Instance.new("Part", workspace) -- Part to goto
+
+local AT0, AT1 = Instance.new("Attachment", PrimaryPart), Instance.new("Attachment", DestinationPart) -- Attachment 1 for Primary Part, Attachment 2 for DestinationPart
+
+AT0["Position"] = Vector3.new(0, 0, 0); AT1["Position"] = Vector3.new(0, 0, 0) -- Prevents torque from the AACOM property of Line force
+
+LineForce["Attachment0"] = AT0; LineForce["Attachment1"] = AT1; -- Setting the attachment properties to the correlated attachments
+
+-- // Properties (mess with these)
+DestinationPart["Anchored"] = true
+LineForce["InverseSquareLaw"] = false 
+LineForce["ApplyAtCenterOfMass"] = true
+LineForce["Magnitude"] = 1e4
+LineForce["MaxForce"] = 1e2 + math.floor(Mass)
+LineForce["ReactionForceEnabled"] = false
+LineForce["Enabled"] = true
 local PlayerMetaVars = {}
 local TargetMetaVars = {}
 
