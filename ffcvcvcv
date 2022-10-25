@@ -1,0 +1,79 @@
+local KT = {
+    Mass = true, -- uses mass to kill
+    Delay = true, -- waits like 5 seconds before killing
+    Normal = false, -- idk what this is
+}
+local S = {
+    ["W"] = game:findService("Workspace"),
+    ["P"] = game:findService("Players"),
+    ["HRP"] = game:findService("Players")["LocalPlayer"]["Character"]:WaitForChild("HumanoidRootPart"),
+    ["RS"] = game:findService("RunService")
+}
+local LP = S["P"]["LocalPlayer"]
+
+function Kill()
+    for _, X in pairs(game.Players:GetPlayers()) do
+        if
+            X["Name"]:lower():sub(1, #Target) == Target:lower() or
+                X["DisplayName"]:lower():sub(1, #Target) == Target:lower()
+         then
+            local NH = LP["Character"]["Humanoid"]:Clone()
+            NH["Parent"] = LP["Character"]
+            local SP = S["HRP"]["CFrame"]
+
+            LP["Character"]["Humanoid"]:Destroy()
+            for _, V in pairs(LP["Backpack"]:GetChildren()) do
+                if V:IsA("Tool") then
+                    V["Parent"] = LP["Character"]
+                end
+            end
+            local T = LP["Character"]:FindFirstChildOfClass("Tool")
+            firetouchinterest(T["Handle"], X["Character"]["Head"], 0)
+            NH:ChangeState(15)
+            S["W"]["Gravity"] = 111111
+            S["HRP"]["Velocity"] = Vector3["new"](0, 999, 0)
+            LP["CharacterAdded"]:wait()
+            LP["Character"]:WaitForChild("HumanoidRootPart")["CFrame"] = SP
+            LP["Character"]:WaitForChild("ForceField"):Destroy()
+            S["W"]["Gravity"] = 200
+        end
+    end
+end
+
+function DL()
+    game.Players.LocalPlayer.Character.LeftFoot:WaitForChild "OriginalSize":Destroy()
+    game.Players.LocalPlayer.Character.LeftLowerLeg:WaitForChild "OriginalSize":Destroy()
+    game.Players.LocalPlayer.Character.LeftUpperLeg:WaitForChild "OriginalSize":Destroy()
+    LP.Character.Head.OriginalSize:Destroy()
+end
+
+if KT["Delay"] == true then
+    do
+        local OC = LP["Character"]
+        LP["Character"] = Clone
+        LP["Character"] = OC
+        wait(S["P"]["RespawnTime"] - .1)
+        Kill()
+    end
+end
+if KT["Mass"] == true then
+    do
+        game.Players.LocalPlayer.Character.LeftLowerLeg.LeftKneeRigAttachment.OriginalPosition:Destroy()
+        game.Players.LocalPlayer.Character.LeftUpperLeg.LeftKneeRigAttachment.OriginalPosition:Destroy()
+        game.Players.LocalPlayer.Character.LeftLowerLeg:WaitForChild "LeftKneeRigAttachment":Destroy()
+        game.Players.LocalPlayer.Character.LeftUpperLeg:WaitForChild "LeftKneeRigAttachment":Destroy()
+
+        for i, v in next, game.Players.LocalPlayer.Character.Humanoid:GetChildren() do
+            if v:IsA "NumberValue" then
+                DL()
+                v:Destroy()
+            end
+        end
+        Kill()
+    end
+end
+if KT["Normal"] == true then
+    do
+        Kill()
+    end
+end
